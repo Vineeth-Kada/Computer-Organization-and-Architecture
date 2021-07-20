@@ -77,7 +77,7 @@ class cache {
             cout << "Enter associativity (0 for fully associative, 1 for direct-mapped, 2/4/8/16/32 for set-associative): ";
             while(! validInput){
                 cin  >>  associativity;
-                if(__builtin_popcount(associativity) == 1 && associativity <= 32) validInput = true;
+                if(associativity == 0 ||( __builtin_popcount(associativity) == 1 && associativity <= 32)) validInput = true;
                 else cout << "Please enter a valid input: ";
             }
             validInput = false;
@@ -127,6 +127,7 @@ class cache {
             }
             //ifstream memoryTrace(fileName);
             string token;
+            string temp;
             while(memoryTrace >> token) {
                 cacheAccesses++;
 
@@ -134,9 +135,11 @@ class cache {
                 token.erase(token.begin(), token.begin() + 2);
 
                 /* If the block is accessed for the first time */
-                if(accessed.count(token) == 0){
+                temp = token;
+                temp.erase(temp.end()-blockOffsetSize/4, temp.end());
+                if(accessed.count(temp) == 0){
                     compulsoryMisses++;
-                    accessed.insert(token);
+                    accessed.insert(temp);
                 }
 
                 /* Converting the hexadecimal address to decimal */
