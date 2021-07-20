@@ -80,7 +80,13 @@ class cache {
                 if(__builtin_popcount(associativity) == 1 && associativity <= 32) validInput = true;
                 else cout << "Please enter a valid input: ";
             }
-            cin >> replacementPolicy;
+            validInput = false;
+            cout << "Enter a type of replacement policy (0 for random, 1 for LRU, 2 for Pseudo-LRU): ";
+            while(! validInput) {
+                cin >> replacementPolicy;
+                if(replacementPolicy == 0 || replacementPolicy == 1 || replacementPolicy == 2) validInput = true;
+                else cout << "Please enter a value among 0, 1 or 2: ";
+            }
 
             blocks = cacheSize/blockSize;
             ways = (associativity==0 ? blocks : associativity);
@@ -105,8 +111,21 @@ class cache {
 
         /* Provides tokens from memory trace to appropriate function based on replacement policy */
         void processTokens() {
-            string fileName; cin >> fileName;
-            ifstream memoryTrace(fileName);
+            bool validInput = false;
+            string fileName; 
+            cout << "Enter the name of the input file: ";
+            ifstream memoryTrace;
+            while(! validInput) {
+                cin >> fileName;
+                memoryTrace.open(fileName);
+                if(memoryTrace) {
+                    validInput = true;
+                }
+                else {
+                    cout << "The file doesn't exist. Kindly enter the name of a file that exists in the present directory: ";
+                }
+            }
+            //ifstream memoryTrace(fileName);
             string token;
             while(memoryTrace >> token) {
                 cacheAccesses++;
